@@ -29,7 +29,9 @@ export function createBlog(req: Request, res: Response) {
 export function editBlog(req: Request, res: Response) {
   const id = req.params.id;
   Blog.findByIdAndUpdate(id)
-    .then((resolve) => console.log(resolve))
+    .then((resolve) =>
+      res.status(201).json({ message: "updated successfully" })
+    )
     .catch((error) =>
       res.status(404).json({ message: "An error occurred updating your blog" })
     );
