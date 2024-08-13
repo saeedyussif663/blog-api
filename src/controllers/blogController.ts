@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import Blog from '../models/blogModel';
 
-// fetch all blogs
 export async function fetchAllBlogs(req: Request, res: Response) {
   try {
     const blogs = await Blog.find({});
@@ -15,10 +14,14 @@ export async function fetchAllBlogs(req: Request, res: Response) {
 export async function fetchSingleBlog(req: Request, res: Response) {
   try {
     const id = req.params.id;
+    const item = await Blog.findOne({ id });
+    if (!item) {
+      return res.status(404).json({ message: 'Blog does not exist' });
+    }
     const blog = await Blog.findById(id);
     return res.status(200).json(blog);
   } catch (error) {
-    return res.status(404).json({ message: 'Blog not found' });
+    return res.status(404).json({ message: 'An error occured fetching blog' });
   }
 }
 
@@ -38,11 +41,14 @@ export async function createBlog(req: Request, res: Response) {
 export async function editBlog(req: Request, res: Response) {
   const id = req.params.id;
   try {
-    const blog = Blog.findByIdAndUpdate(id, req.body);
-    return res
-      .status(201)
-      .json({ blog: blog, message: 'updated blog successfully' });
+    const item = await Blog.findOne({ id });
+    if (!item) {
+      return res.status(404).json({ message: 'Blog does not exist' });
+    }
+    const blog = await Blog.findByIdAndUpdate(id, req.body);
+    return res.status(201).json({ message: 'updated blog successfully' });
   } catch (error) {
+    console.log(error);
     return res
       .status(404)
       .json({ message: 'An error occurred updating your blog' });
@@ -53,6 +59,10 @@ export async function editBlog(req: Request, res: Response) {
 export async function deleteBlog(req: Request, res: Response) {
   const id = req.params.id;
   try {
+    const item = await Blog.findOne({ id });
+    if (!item) {
+      return res.status(404).json({ message: 'Blog does not exist' });
+    }
     await Blog.findByIdAndDelete(id);
     return res.status(200).json({ message: 'Deleted blog successfully' });
   } catch (error) {
