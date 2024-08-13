@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Blog from '../models/blogModel';
+import { validationResult } from 'express-validator';
 
 export async function fetchAllBlogs(req: Request, res: Response) {
   try {
@@ -27,6 +28,9 @@ export async function fetchSingleBlog(req: Request, res: Response) {
 
 // create blog
 export async function createBlog(req: Request, res: Response) {
+  const results = validationResult(req);
+  console.log(results);
+
   try {
     const blog = await Blog.create(req.body);
     return res

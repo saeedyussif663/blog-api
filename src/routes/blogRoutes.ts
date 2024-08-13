@@ -1,22 +1,23 @@
-import { Router } from "express";
+import { Router } from 'express';
 import {
   createBlog,
   fetchAllBlogs,
   fetchSingleBlog,
   editBlog,
   deleteBlog,
-} from "../controllers/blogController";
+} from '../controllers/blogController';
+import { ValidateSchema } from '../utils/lib';
 
 const router = Router();
 
-router.get("/", fetchAllBlogs);
+router.get('/', fetchAllBlogs);
 
-router.post("/create", createBlog);
+router.post('/create', ValidateSchema, createBlog);
 
-router.put("/edit/:id", editBlog);
+router.put('/edit/:id', editBlog);
 
-router.delete("/delete/:id", deleteBlog);
+router.delete('/delete/:id', deleteBlog);
 
-router.get("/:id", fetchSingleBlog);
+router.get('/:id', fetchSingleBlog);
 
 export default router;
